@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running Teks Gempa BMKG</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .running-text {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: fixed;
+            bottom: 0;
+            background: #dc3545;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+        .marquee {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+    </style>
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
+                const data = await response.json();
+                
+                const text = `🛑 GEMPA: ${data.Infogempa.gempa.Tanggal} ${data.Infogempa.gempa.Jam} | Magnitudo: ${data.Infogempa.gempa.Magnitude} | Kedalaman: ${data.Infogempa.gempa.Kedalaman} | Lokasi: ${data.Infogempa.gempa.Wilayah} | Potensi: ${data.Infogempa.gempa.Potensi}`;
+                document.getElementById('running-text').textContent = text;
+            } catch (error) {
+                console.error('Gagal mengambil data:', error);
+            }
+        }
+        
+        setInterval(fetchData, 10000); // Update setiap 10 detik
+        window.onload = fetchData;
+    </script>
+</head>
+<body>
+       
+        <span id="running-text" class="marquee">Memuat data gempa...</span>
+    
+</body>
+</html>
